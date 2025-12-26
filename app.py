@@ -5,14 +5,19 @@ from engine import calculate_snowscore, determine_decision
 app = FastAPI()
 
 
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """
-    <html>
-    <head>
-        <title>Snow Day Calculator</title>
-    </head>
-    <body>
+<body>
+
+<h1>Snow Day Calculator</h1>
+
+<div style="border:2px solid black; padding:12px; margin-bottom:20px;">
+  <strong>SNOWSCORE RUBRIC</strong><br>
+  0–25: School is ON<br>
+  26–50: Late Start / Early Dismissal / Cancellation Possible<br>
+  51+: Cancel School
+</div>
+
+<form action="/calculate" method="post">
+
         <h1>Snow Day Calculator</h1>
 
         <form action="/calculate" method="post">
