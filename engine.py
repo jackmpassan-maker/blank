@@ -172,27 +172,40 @@ def determine_decision(score, peak_window):
     # -----------------------
     # 45–50
     # -----------------------
-    if 45 <= score <= 50:
-        if peak_window in ["6PM-9PM", "9PM-12AM", "12AM-3AM"]:
-            return (
-                "Late Start",
-                "SnowScore is high-moderate with peak intensity occurring overnight. "
-                "A late start allows crews additional time to improve road conditions "
-                "before the morning commute."
-            )
-        elif peak_window in ["3AM-6AM", "6AM-9AM"]:
-            return (
-                "Cancel School",
-                "SnowScore is high-moderate with peak intensity during the morning "
-                "commute. Travel conditions are likely unsafe, making cancellation "
-                "the safest option."
-            )
-        elif peak_window in ["12PM-3PM", "3PM-6PM"]:
-            return (
-                "Early Dismissal",
-                "SnowScore is high-moderate with peak intensity expected in the afternoon. "
-                "Early dismissal reduces travel risk as conditions deteriorate."
-            )
+   # -----------------------
+# 45–50
+# -----------------------
+if 45 <= score <= 50:
+    if peak_window in ["6PM-9PM", "9PM-12AM", "12AM-3AM"]:
+        return (
+            "Late Start",
+            "SnowScore is high-moderate with peak intensity occurring overnight. "
+            "A late start allows crews additional time to improve road conditions "
+            "before the morning commute."
+        )
+
+    elif peak_window in ["3AM-6AM", "6AM-9AM"]:
+        return (
+            "Cancel School",
+            "SnowScore is high-moderate with peak intensity during the morning "
+            "commute. Travel conditions are likely unsafe, making cancellation "
+            "the safest option."
+        )
+
+    elif peak_window in ["12PM-3PM", "3PM-6PM"]:
+        return (
+            "Early Dismissal",
+            "SnowScore is high-moderate with peak intensity expected in the afternoon. "
+            "Early dismissal reduces travel risk as conditions deteriorate."
+        )
+
+    else:
+        return (
+            "School ON",
+            "SnowScore is high-moderate, but peak intensity falls outside critical "
+            "travel windows. Normal operations remain reasonable."
+        )
+
 
     # -----------------------
     # 51+
