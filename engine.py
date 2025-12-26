@@ -89,7 +89,7 @@ def calculate_snowscore(
 
     # Normalize by climatology
     base = total_eq / math.sqrt(avg_annual_snow + 1)
-    snowscore = base * 25
+    snowscore = base * 30
 
     # Apply multipliers
     snowscore *= REGION_MULT.get(region.lower(), 1.0)
