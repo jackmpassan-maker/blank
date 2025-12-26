@@ -103,6 +103,37 @@ def calculate(
 
     decision = determine_decision(snowscore, peak_windows)
 
+    # Explanation logic (mirrors decision rubric)
+if snowscore <= 25:
+    explanation = "Overall conditions are minor, so school can operate as normal."
+
+elif snowscore <= 34:
+    if "6AM-9AM" in peak_windows:
+        explanation = "Peak intensity during the morning commute increases travel risk, supporting a late start."
+    else:
+        explanation = "Conditions are manageable overall, so school can remain open."
+
+elif snowscore <= 44:
+    if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
+        explanation = "Snow is heaviest during the morning commute, increasing the need for a late start."
+    elif any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
+        explanation = "Peak conditions occur during school hours, which may justify an early dismissal."
+    else:
+        explanation = "Despite moderate snowfall, timing reduces disruption, allowing school to remain open."
+
+elif snowscore <= 50:
+    if any(w in peak_windows for w in ["6PM-9PM", "9PM-12AM", "12AM-3AM"]):
+        explanation = "Overnight or evening peak intensity suggests delayed morning conditions, favoring a late start."
+    elif any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
+        explanation = "Dangerous conditions during the morning commute increase the likelihood of cancellation."
+    elif any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
+        explanation = "Peak snowfall during the school day increases the need for an early dismissal."
+    else:
+        explanation = "High overall impact suggests school operations would be unsafe."
+
+else:
+    explanation = "Extreme winter conditions make normal school operations unsafe."
+
     return f"""
     <html>
     <head>
