@@ -102,17 +102,57 @@ def calculate(
     )
 
     decision = determine_decision(snowscore, peak_windows)
-    
+
+    # -----------------------------
+    # Explanation logic (EXACT)
+    # -----------------------------
+    if snowscore <= 25:
+        explanation = "Overall conditions are minor, so school can operate as normal."
+
+    elif snowscore <= 34:
+        if "6AM-9AM" in peak_windows:
+            explanation = "Peak intensity during the morning commute supports a late start."
+        else:
+            explanation = "Conditions remain manageable overall, allowing school to stay open."
+
+    elif snowscore <= 44:
+        if "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
+            explanation = "Heaviest snow occurs during the morning commute, supporting a late start."
+        elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
+            explanation = "Peak conditions during the school day increase the need for early dismissal."
+        else:
+            explanation = "Timing reduces disruption enough for school to remain open."
+
+    elif snowscore <= 50:
+        if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows or "12AM-3AM" in peak_windows:
+            explanation = "Evening or overnight peak intensity supports a late start."
+        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
+            explanation = "Dangerous conditions during the morning commute support cancellation."
+        elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
+            explanation = "Peak snowfall during school hours supports early dismissal."
+        else:
+            explanation = "Overall conditions are too disruptive for safe operations."
+
+    else:
+        explanation = "Extreme winter conditions make school operations unsafe."
+
     return f"""
-    <html>
-    <head>
-        <title>Result</title>
-    </head>
-    <body>
-        <h2>SnowScore: {snowscore}</h2>
-        <h2>Decision: {decision}</h2>
-        <br>
-        <a href="/">← Back</a>
-    </body>
-    </html>
-    """
+<html>
+<head>
+    <title>Result</title>
+</head>
+<body>
+    <h2>SnowScore: {snowscore}</h2>
+    <h2>Decision: {decision}</h2>
+
+    <p>
+        <strong>Explanation:</strong><br>
+        {explanation}
+    </p>
+
+    <br>
+    <a href="/">← Back</a>
+</body>
+</html>
+"""
+
