@@ -134,7 +134,7 @@ elif snowscore <= 50:
 else:
     explanation = "Extreme winter conditions make normal school operations unsafe."
 
-    return f"""
+return f"""
     <html>
     <head>
         <title>Result</title>
