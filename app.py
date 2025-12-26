@@ -115,9 +115,14 @@ def calculate(
     </head>
     <body>
         <h2>SnowScore: {snowscore}</h2>
-        <h2>Decision: {decision}</h2>
-        <br>
-        <a href="/">← Back</a>
+<h2>Decision: {decision}</h2>
+
+<p><strong>Explanation:</strong></p>
+<p>{explanation}</p>
+
+<br>
+<a href="/">← Back</a>
+
     </body>
     </html>
     """
