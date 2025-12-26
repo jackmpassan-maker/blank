@@ -114,7 +114,8 @@ def calculate(
         <title>Result</title>
     </head>
     <body>
-        <h2>SnowScore: {snowscore}</h2>
+        <h2>SnowScore: {score}</h2>
+
 <h2>Decision: {decision}</h2>
 
 <p><strong>Explanation:</strong></p>
