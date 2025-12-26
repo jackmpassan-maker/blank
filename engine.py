@@ -18,9 +18,9 @@ TIMING_MULTIPLIERS = {
 # Regional multipliers
 # --------------------
 REGION_MULT = {
-    "urban": 0.75,
+    "urban": 0.8,
     "suburban": 1.00,
-    "rural": 1.25,
+    "rural": 1.3,
 }
 
 # --------------------
@@ -89,7 +89,7 @@ def calculate_snowscore(
 
     # Normalize by climatology
     base = total_eq / math.sqrt(avg_annual_snow + 1)
-    snowscore = base * 25
+    snowscore = base * 30
 
     # Apply multipliers
     snowscore *= REGION_MULT.get(region.lower(), 1.0)
