@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-from engine import calculate_snowscore, determine_decision
+from engine import calculate_snowscore, determine_decision, get_explanation
+
 
 app = FastAPI()
 
@@ -95,6 +96,8 @@ def calculate(
     )
 
     decision = determine_decision(snowscore, peak_windows)
+    explanation = get_explanation(snowscore, peak_windows)
+
 
     return f"""
     <html>
