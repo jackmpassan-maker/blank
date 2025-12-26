@@ -5,14 +5,14 @@ from engine import calculate_snowscore, determine_decision
 app = FastAPI()
 
 
-<body>
-
-<div>SNOWSCORE RUBRIC</div>
-<h1>Snow Day Calculator</h1>
-
-
-<form action="/calculate" method="post">
-
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return """
+    <html>
+    <head>
+        <title>Snow Day Calculator</title>
+    </head>
+    <body>
         <h1>Snow Day Calculator</h1>
 
         <form action="/calculate" method="post">
@@ -109,5 +109,6 @@ def calculate(
     </body>
     </html>
     """
+
 
 
