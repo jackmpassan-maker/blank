@@ -103,8 +103,7 @@ def calculate(
 
     decision = determine_decision(snowscore, peak_windows)
     
-
-return f"""
+    return f"""
     <html>
     <head>
         <title>Result</title>
