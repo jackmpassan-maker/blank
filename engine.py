@@ -141,3 +141,30 @@ def determine_decision(snowscore, peak_windows):
 
     # 50+
     return "Cancel"
+    def get_explanation(snowscore, peak_windows):
+    if snowscore <= 25:
+        return "Total storm impact is low and does not significantly disrupt travel or operations."
+
+    if snowscore <= 34:
+        if "6AM-9AM" in peak_windows:
+            return "Snowfall peaks during the morning commute, supporting a delayed start."
+        return "Impacts are moderate but peak timing does not interfere with school hours."
+
+    if snowscore <= 44:
+        if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
+            return "Moderate snowfall during early morning hours favors a late start."
+        if any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
+            return "Conditions worsen during the afternoon, increasing early dismissal risk."
+        return "Storm intensity is moderate but poorly timed for operational disruption."
+
+    if snowscore <= 50:
+        if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
+            return "Heavy snow during the morning commute creates unsafe travel conditions."
+        if any(w in peak_windows for w in ["6PM-9PM", "9PM-12AM"]):
+            return "Overnight impacts favor a delayed opening rather than full cancellation."
+        if any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
+            return "Peak impacts during school hours increase early dismissal risk."
+        return "Overall impact is high enough to justify cancellation."
+
+    return "Storm severity is extreme and widespread, making safe school operations impossible."
+
