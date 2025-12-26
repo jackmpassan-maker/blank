@@ -7,14 +7,9 @@ app = FastAPI()
 
 <body>
 
+<div>SNOWSCORE RUBRIC</div>
 <h1>Snow Day Calculator</h1>
 
-<div style="border:2px solid black; padding:12px; margin-bottom:20px;">
-  <strong>SNOWSCORE RUBRIC</strong><br>
-  0–25: School is ON<br>
-  26–50: Late Start / Early Dismissal / Cancellation Possible<br>
-  51+: Cancel School
-</div>
 
 <form action="/calculate" method="post">
 
