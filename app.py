@@ -15,6 +15,13 @@ def home():
     <body>
         <h1>Snow Day Calculator</h1>
 
+        <div style="margin-bottom:20px; font-size:16px;">
+    <strong>Decision Guide:</strong><br>
+    0–25: School is ON<br>
+    26–50: Consider Late Start / Early Dismissal / Cancellation<br>
+    51+: Cancel School
+</div>
+
         <form action="/calculate" method="post">
             <label>Snow (inches):</label><br>
             <input type="number" step="0.1" name="snow" required><br><br>
