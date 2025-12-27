@@ -133,7 +133,7 @@ def calculate(
     elif snowscore <= 50:
         if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows or "12AM-3AM" in peak_windows:
             explanation = "Evening or overnight peak intensity supports a late start."
-        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
+        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows or "9AM-12PM" in peak_windows:
             explanation = "Dangerous conditions during the morning commute support cancellation."
         elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
             explanation = "Peak winter precipitation during school hours supports early dismissal."
