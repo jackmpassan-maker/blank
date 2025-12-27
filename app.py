@@ -65,7 +65,7 @@ def home():
                 <option value="private">Private</option>
             </select><br><br>
 
-            <label>Peak Intensity Windows:</label><br>
+            <label>Peak Intensity Windows (If 3 hour window is >35% of total winter precipitation accumulation; check all that apply):</label><br>
             <input type="checkbox" name="peak_windows" value="12AM-3AM">12AM–3AM<br>
             <input type="checkbox" name="peak_windows" value="3AM-6AM">3AM–6AM<br>
             <input type="checkbox" name="peak_windows" value="6AM-9AM">6AM–9AM<br>
