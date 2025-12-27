@@ -18,8 +18,8 @@ def home():
         <div style="margin-bottom:20px; font-size:16px;">
     <strong>Decision Guide:</strong><br>
     0–25: School is ON<br>
-    26–50: Consider Late Start / Early Dismissal / Cancellation<br>
-    51+: Cancel School
+    25–50: Consider Late Start / Early Dismissal / Cancellation<br>
+    50+: Cancel School
 </div>
 
 <p style="font-size:14px; color:#555; max-width:650px;">
