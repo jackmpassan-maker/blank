@@ -102,7 +102,7 @@ def calculate_snowscore(
         snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
 
     # Previous snow days penalty
-    snowscore -= prev_snow_days
+    snowscore -= prev_snow_days * 1.5
 
     return round(snowscore, 1)
 
