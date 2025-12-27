@@ -131,9 +131,9 @@ def determine_decision(snowscore, peak_windows):
 
     # 45–50
     if snowscore <= 50:
-        if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
+        if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM", "9AM-12PM"]):
             return "Cancel"
-        if any(w in peak_windows for w in ["6PM-9PM", "9PM-12AM"]):
+        if any(w in peak_windows for w in ["6PM-9PM", "9PM-12AM", "12AM-3AM"]):
             return "Late Start"
         if any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
             return "Early Dismissal"
