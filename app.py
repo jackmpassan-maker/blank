@@ -23,13 +23,13 @@ def home():
 </div>
 
         <form action="/calculate" method="post">
-            <label>Snow (inches):</label><br>
+            <label>Snow Expected (inches):</label><br>
             <input type="number" step="0.1" name="snow" required><br><br>
 
-            <label>Freezing Rain (inches):</label><br>
+            <label>Freezing Rain Expected (inches):</label><br>
             <input type="number" step="0.01" name="freezing_rain" value="0"><br><br>
 
-            <label>Sleet (inches):</label><br>
+            <label>Sleet Expected (inches):</label><br>
             <input type="number" step="0.01" name="sleet" value="0"><br><br>
 
             <label>Average Annual Snow (inches):</label><br>
@@ -38,7 +38,7 @@ def home():
             <label>Temperature (°F):</label><br>
             <input type="number" name="temp_f" required><br><br>
 
-            <label>Wind Speed (mph):</label><br>
+            <label>Maximum Sustained Winds (mph):</label><br>
             <input type="number" name="wind_mph" required><br><br>
 
             <label>Previous Snow Days:</label><br>
@@ -107,7 +107,7 @@ def calculate(
     # Explanation logic (EXACT)
     # -----------------------------
     if snowscore <= 25:
-        explanation = "Overall conditions are minor, so school can operate as normal."
+        explanation = "Overall conditions are adequate, so school can operate as normal."
 
     elif snowscore <= 34:
         if "6AM-9AM" in peak_windows:
@@ -117,7 +117,7 @@ def calculate(
 
     elif snowscore <= 44:
         if "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
-            explanation = "Heaviest snow occurs during the morning commute, supporting a late start."
+            explanation = "Heaviest winter precipitation occurs during the morning commute, supporting a late start."
         elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
             explanation = "Peak conditions during the school day increase the need for early dismissal."
         else:
@@ -129,7 +129,7 @@ def calculate(
         elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
             explanation = "Dangerous conditions during the morning commute support cancellation."
         elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
-            explanation = "Peak snowfall during school hours supports early dismissal."
+            explanation = "Peak winter precipitation during school hours supports early dismissal."
         else:
             explanation = "Overall conditions are too disruptive for safe operations."
 
