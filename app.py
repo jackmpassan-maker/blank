@@ -118,23 +118,23 @@ def calculate(
 
     elif snowscore <= 34:
         if "6AM-9AM" in peak_windows:
-            explanation = "Peak intensity during the morning commute supports a late start."
+            explanation = "While the disruptions are somewhat insignificant, peak intensity in the heart of the the morning commute supports a late start."
         else:
-            explanation = "Conditions remain manageable overall, allowing school to stay open."
+            explanation = "Some disruptions are possible, but conditions remain manageable overall, allowing school to stay open."
 
     elif snowscore <= 44:
         if "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
-            explanation = "Heaviest winter precipitation occurs during the morning commute, supporting a late start."
+            explanation = "Moderate disruptions occurs during or just before the morning commute, supporting a late start."
         elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
-            explanation = "Peak conditions during the school day increase the need for early dismissal."
+            explanation = "The worst conditions occur during the school day, increasing the need for early dismissal."
         else:
-            explanation = "Timing reduces disruption enough for school to remain open."
+            explanation = "While disruptions will be impactful, timing reduces disruption enough for school to remain open."
 
     elif snowscore <= 50:
-        if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows or "12AM-3AM" in peak_windows:
-            explanation = "Evening or overnight peak intensity supports a late start."
-        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows or "9AM-12PM" in peak_windows:
-            explanation = "Dangerous conditions during the morning commute support cancellation."
+        if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows:
+            explanation = "While it is an impactful event, fortunate timing allows for only a late start"
+        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows or "9AM-12PM" in peak_windows  or "12AM-3AM" in peak_windows:
+            explanation = "Dangerous conditions overnight or during the morning hours support cancellation."
         elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
             explanation = "Peak winter precipitation during school hours supports early dismissal."
         else:
