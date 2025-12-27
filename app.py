@@ -22,6 +22,13 @@ def home():
     51+: Cancel School
 </div>
 
+<p style="font-size:14px; color:#555; max-width:650px;">
+    <strong>Disclaimer:</strong>
+    For the purposes of this model, school-day impacts are evaluated starting at <strong>6:00 PM</strong>.
+    Conditions before 6:00 PM are treated as affecting the current school day, while conditions after
+    6:00 PM are considered relevant to the following school day.
+</p>
+
         <form action="/calculate" method="post">
             <label>Snow Expected (inches):</label><br>
             <input type="number" step="0.1" name="snow" required><br><br>
