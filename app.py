@@ -117,7 +117,7 @@ def calculate(
         explanation = "Overall conditions are adequate, so school can operate as normal."
 
     elif snowscore <= 34:
-        if "6AM-9AM" in peak_windows:
+        if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
             explanation = "While the disruptions are somewhat insignificant, peak intensity in the heart of the the morning commute supports a late start."
         else:
             explanation = "Some disruptions are possible, but conditions remain manageable overall, allowing school to stay open."
