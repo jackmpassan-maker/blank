@@ -87,8 +87,8 @@ def calculate_snowscore(
     if total_eq <= 0:
         return 0.0
 
-    # Normalize by climatology
-    base = total_eq / math.sqrt(avg_annual_snow + 1)
+    # Normalize by climatology (reduced suppression for high-snow regions)
+    base = total_eq / (avg_annual_snow + 1) ** 0.4
     snowscore = base * 30
 
     # Apply multipliers
