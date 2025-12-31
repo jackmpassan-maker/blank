@@ -171,7 +171,7 @@ def next_storm_contribution(next_snowscore: float | None) -> int:
         return 0
     if next_snowscore is < 15: 
         return 0
-    if next_snowscore < 25:
+    elif next_snowscore < 25:
         return 1
     elif next_snowscore < 35:
         return 2
