@@ -174,17 +174,35 @@ def calculate(
     <title>Result</title>
 </head>
 <body>
-    <h2>SnowScore: {snowscore}</h2>
-    <h2>Decision: {decision}</h2>
-    <p><strong>Explanation:</strong><br>{explanation}</p>
 
-    <h2>Recovery Score: {recovery_score}</h2>
-    <p><strong>Interpretation:</strong> {recovery_interpretation}</p>
+    <!-- SnowScore Rubric -->
+    <h2>SnowScore Rubric:</h2>
+    <div style="background:#f0f0f0; padding:10px; border:1px solid #ccc; margin-bottom:20px;">
+        <div style="font-size:16px; margin-bottom:10px;">
+            0–25: School ON<br>
+            25–50: Consider Late Start / Early Dismissal / Cancellation<br>
+            50+: Cancel School
+        </div>
+        <h3>SnowScore: {snowscore}</h3>
+        <p><strong>Decision:</strong> {decision}</p>
+        <p><strong>Explanation:</strong><br>{explanation}</p>
+    </div>
+
+    <!-- Recovery Score Rubric -->
+    <h2>Recovery Score Rubric (Optional Inputs Only):</h2>
+    <div style="background:#e0f7ff; padding:10px; border:1px solid #66c2ff; margin-bottom:20px;">
+        <div style="font-size:16px; margin-bottom:10px;">
+            0–3: Normal recovery expected<br>
+            3–6: Minor delays possible<br>
+            6–9: Elevated risk of additional snow day<br>
+            9+: High likelihood of extended closures
+        </div>
+        <h3>Recovery Score: {recovery_score}</h3>
+        <p><strong>Interpretation:</strong> {recovery_interpretation}</p>
+    </div>
 
     <br>
     <a href="/">← Back</a>
 </body>
 </html>
 """
-
-
