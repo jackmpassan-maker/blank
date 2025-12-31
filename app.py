@@ -1,6 +1,11 @@
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-from engine import calculate_snowscore, determine_decision
+from engine import (
+    calculate_snowscore,
+    determine_decision,
+    calculate_recovery_score,
+    interpret_recovery_score
+)
 
 app = FastAPI()
 
@@ -11,25 +16,21 @@ def home():
     <html>
     <head>
         <title>Snow Day Calculator</title>
+        <style>
+            .optional-section {
+                background: #e0f7ff;
+                padding: 15px;
+                border: 1px solid #66c2ff;
+                margin-top: 20px;
+                width: fit-content;
+            }
+        </style>
     </head>
     <body>
         <h1>Snow Day Calculator</h1>
 
-        <div style="margin-bottom:20px; font-size:16px;">
-    <strong>Decision Guide:</strong><br>
-    0–25: School is ON<br>
-    25–50: Consider Late Start / Early Dismissal / Cancellation<br>
-    50+: Cancel School
-</div>
-
-<p style="font-size:14px; color:#555; max-width:650px;">
-    <strong>Disclaimer:</strong>
-    For the purposes of this model, school-day impacts are evaluated starting at <strong>6:00 PM</strong>.
-    Conditions before 6:00 PM are treated as affecting the current school day, while conditions after
-    6:00 PM are considered relevant to the following school day.
-</p>
-
         <form action="/calculate" method="post">
+            <!-- Existing SnowScore Inputs -->
             <label>Snow Expected (inches):</label><br>
             <input type="number" step="0.1" name="snow" required><br><br>
 
@@ -65,7 +66,7 @@ def home():
                 <option value="private">Private</option>
             </select><br><br>
 
-            <label>Peak Intensity Windows (If 3 hour window is >35% of total winter precipitation accumulation; check all that apply):</label><br>
+            <label>Peak Intensity Windows:</label><br>
             <input type="checkbox" name="peak_windows" value="12AM-3AM">12AM–3AM<br>
             <input type="checkbox" name="peak_windows" value="3AM-6AM">3AM–6AM<br>
             <input type="checkbox" name="peak_windows" value="6AM-9AM">6AM–9AM<br>
@@ -74,6 +75,22 @@ def home():
             <input type="checkbox" name="peak_windows" value="3PM-6PM">3PM–6PM<br>
             <input type="checkbox" name="peak_windows" value="6PM-9PM">6PM–9PM<br>
             <input type="checkbox" name="peak_windows" value="9PM-12AM">9PM–12AM<br><br>
+
+            <!-- Recovery Score Optional Inputs -->
+            <div class="optional-section">
+                <h3>Recovery Score Inputs (Optional)</h3>
+                <label>Current Storm SnowScore:</label><br>
+                <input type="number" step="0.1" name="current_storm_snowscore"><br><br>
+
+                <label>Hours Until Next Storm:</label><br>
+                <input type="number" step="0.1" name="hours_until_next_storm"><br><br>
+
+                <label>Next Storm SnowScore:</label><br>
+                <input type="number" step="0.1" name="next_snowscore"><br><br>
+
+                <label>Future High Temperature °F:</label><br>
+                <input type="number" step="0.1" name="future_high_temp_f"><br><br>
+            </div>
 
             <button type="submit">Calculate</button>
         </form>
@@ -84,6 +101,7 @@ def home():
 
 @app.post("/calculate", response_class=HTMLResponse)
 def calculate(
+    # SnowScore fields
     snow: float = Form(...),
     freezing_rain: float = Form(0),
     sleet: float = Form(0),
@@ -93,7 +111,12 @@ def calculate(
     temp_f: float = Form(...),
     wind_mph: float = Form(...),
     prev_snow_days: int = Form(0),
-    peak_windows: list[str] = Form([])
+    peak_windows: list[str] = Form([]),
+    # Recovery Score optional fields
+    current_storm_snowscore: float | None = Form(None),
+    hours_until_next_storm: float | None = Form(None),
+    next_snowscore: float | None = Form(None),
+    future_high_temp_f: float | None = Form(None)
 ):
     snowscore = calculate_snowscore(
         snow,
@@ -107,21 +130,25 @@ def calculate(
         prev_snow_days,
         peak_windows
     )
-
     decision = determine_decision(snowscore, peak_windows)
 
-    # -----------------------------
-    # Explanation logic (EXACT)
-    # -----------------------------
+    # Optional Recovery Score
+    recovery_score = calculate_recovery_score(
+        current_storm_snowscore,
+        hours_until_next_storm,
+        next_snowscore,
+        future_high_temp_f
+    )
+    recovery_interpretation = interpret_recovery_score(recovery_score)
+
+    # Explanation logic (same as before)
     if snowscore <= 25:
         explanation = "Overall conditions are adequate, so school can operate as normal."
-
     elif snowscore <= 34:
         if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
             explanation = "While the disruptions are somewhat insignificant, peak intensity in the heart of the the morning commute supports a late start."
         else:
             explanation = "Some disruptions are possible, but conditions remain manageable overall, allowing school to stay open."
-
     elif snowscore <= 44:
         if "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
             explanation = "Moderate disruptions occurs during or just before the morning commute, supporting a late start."
@@ -129,7 +156,6 @@ def calculate(
             explanation = "The worst conditions occur during the school day, increasing the need for early dismissal."
         else:
             explanation = "While disruptions will be impactful, timing reduces disruption enough for school to remain open."
-
     elif snowscore <= 50:
         if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows:
             explanation = "While it is an impactful event, fortunate timing allows for only a late start"
@@ -139,7 +165,6 @@ def calculate(
             explanation = "Peak winter precipitation during school hours supports early dismissal."
         else:
             explanation = "Overall conditions are too disruptive for safe operations."
-
     else:
         explanation = "Extreme winter conditions make school operations unsafe."
 
@@ -151,15 +176,15 @@ def calculate(
 <body>
     <h2>SnowScore: {snowscore}</h2>
     <h2>Decision: {decision}</h2>
+    <p><strong>Explanation:</strong><br>{explanation}</p>
 
-    <p>
-        <strong>Explanation:</strong><br>
-        {explanation}
-    </p>
+    <h2>Recovery Score: {recovery_score}</h2>
+    <p><strong>Interpretation:</strong> {recovery_interpretation}</p>
 
     <br>
     <a href="/">← Back</a>
 </body>
 </html>
 """
+
 
