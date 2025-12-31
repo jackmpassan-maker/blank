@@ -88,7 +88,7 @@ def home():
                 <label>Next Storm SnowScore (only if there is a next storm):</label><br>
                 <input type="number" step="0.1" name="next_snowscore"><br><br>
 
-                <label>Day Following First Closure High Temperature °F:</label><br>
+                <label>High Temperature on Day of First Closure °F:</label><br>
                 <input type="number" step="0.1" name="future_high_temp_f"><br><br>
             </div>
 
