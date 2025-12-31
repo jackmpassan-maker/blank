@@ -193,7 +193,7 @@ def calculate(
     <div style="background:#e0f7ff; padding:10px; border:1px solid #66c2ff; margin-bottom:20px;">
         <div style="font-size:16px; margin-bottom:10px;">
             0–3: Normal recovery expected<br>
-            3–6: Consider a future cancellation<br>
+            3–6: Slight troubles in future days<br>
             6–9: Elevated risk of additional snow day<br>
             9+: High likelihood of extended closures
         </div>
