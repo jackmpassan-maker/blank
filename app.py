@@ -143,7 +143,7 @@ def calculate(
 
     # Explanation logic (same as before)
     if snowscore <= 25:
-        explanation = "Overall conditions are adequate, so school can operate as normal."
+        explanation = "Overall conditions are solid, so school can operate as normal."
     elif snowscore <= 34:
         if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
             explanation = "While the disruptions are somewhat insignificant, peak intensity in the heart of the the morning commute supports a late start."
@@ -193,7 +193,7 @@ def calculate(
     <div style="background:#e0f7ff; padding:10px; border:1px solid #66c2ff; margin-bottom:20px;">
         <div style="font-size:16px; margin-bottom:10px;">
             0–3: Normal recovery expected<br>
-            3–6: Minor delays possible<br>
+            3–6: Consider a future cancellation<br>
             6–9: Elevated risk of additional snow day<br>
             9+: High likelihood of extended closures
         </div>
