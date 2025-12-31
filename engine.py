@@ -143,3 +143,83 @@ def determine_decision(snowscore, peak_windows):
     return "Cancel"
 
 
+# =========================================================
+# RECOVERY SCORE FUNCTIONS (ALL OPTIONAL)
+# =========================================================
+def snowscore_recovery_contribution(snowscore: float | None) -> float:
+    """Contribution from current storm SnowScore. Optional."""
+    if snowscore is None or snowscore < 20:
+        return 0.0
+    return ((int(snowscore) // 10) - 1) * 0.75
+
+
+def time_gap_contribution(hours_until_next_storm: float | None) -> int:
+    if hours_until_next_storm is None:
+        return 0
+    if hours_until_next_storm > 72:
+        return 0
+    elif hours_until_next_storm > 48:
+        return 1
+    elif hours_until_next_storm > 24:
+        return 2
+    else:
+        return 3
+
+
+def next_storm_contribution(next_snowscore: float | None) -> int:
+    if next_snowscore is None:
+        return 0
+    if next_snowscore < 25:
+        return 0
+    elif next_snowscore < 35:
+        return 1
+    elif next_snowscore < 45:
+        return 2
+    elif next_snowscore < 55:
+        return 3
+    else:
+        return 4
+
+
+def future_temp_contribution(high_temp_f: float | None) -> int:
+    if high_temp_f is None:
+        return 0
+    if high_temp_f >= 38:
+        return 0
+    elif high_temp_f >= 34:
+        return 1
+    elif high_temp_f >= 30:
+        return 2
+    elif high_temp_f >= 25:
+        return 3
+    else:
+        return 4
+
+
+def calculate_recovery_score(
+    current_storm_snowscore: float | None = None,
+    hours_until_next_storm: float | None = None,
+    next_snowscore: float | None = None,
+    future_high_temp_f: float | None = None,
+) -> float:
+    """Calculate total recovery score from optional inputs."""
+    score = 0.0
+    score += snowscore_recovery_contribution(current_storm_snowscore)
+    score += time_gap_contribution(hours_until_next_storm)
+    score += next_storm_contribution(next_snowscore)
+    score += future_temp_contribution(future_high_temp_f)
+    return round(score, 2)
+
+
+def interpret_recovery_score(score: float) -> str:
+    if score <= 0:
+        return "No inputs provided"
+    if score <= 3:
+        return "Normal recovery expected"
+    elif score <= 6:
+        return "Minor delays possible"
+    elif score <= 9:
+        return "Elevated risk of additional snow day"
+    else:
+        return "High likelihood of extended closures"
+
