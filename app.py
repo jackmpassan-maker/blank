@@ -43,7 +43,7 @@ def home():
             <label>Average Annual Snow (inches):</label><br>
             <input type="number" name="avg_annual_snow" required><br><br>
 
-            <label>Temperature (°F):</label><br>
+            <label>Average Temperature During Storm (°F):</label><br>
             <input type="number" name="temp_f" required><br><br>
 
             <label>Maximum Sustained Winds (mph):</label><br>
@@ -82,13 +82,13 @@ def home():
                 <label>Current Storm SnowScore:</label><br>
                 <input type="number" step="0.1" name="current_storm_snowscore"><br><br>
 
-                <label>Hours Until Next Storm:</label><br>
+                <label>Hours Until Next Storm (only if there is a next storm):</label><br>
                 <input type="number" step="0.1" name="hours_until_next_storm"><br><br>
 
-                <label>Next Storm SnowScore:</label><br>
+                <label>Next Storm SnowScore (only if there is a next storm):</label><br>
                 <input type="number" step="0.1" name="next_snowscore"><br><br>
 
-                <label>Future High Temperature °F:</label><br>
+                <label>Day Following First Closure High Temperature °F:</label><br>
                 <input type="number" step="0.1" name="future_high_temp_f"><br><br>
             </div>
 
