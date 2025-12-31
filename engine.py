@@ -217,7 +217,7 @@ def interpret_recovery_score(score: float) -> str:
     if score <= 3:
         return "Normal recovery expected"
     elif score <= 6:
-        return "Minor delays possible"
+        return "Slight troubles in future days"
     elif score <= 9:
         return "Elevated risk of additional snow day"
     else:
