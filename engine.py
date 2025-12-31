@@ -169,7 +169,7 @@ def time_gap_contribution(hours_until_next_storm: float | None) -> int:
 def next_storm_contribution(next_snowscore: float | None) -> int:
     if next_snowscore is None:
         return 0
-    if next_snowscore is < 15: 
+    if next_snowscore < 15: 
         return 0
     elif next_snowscore < 25:
         return 1
