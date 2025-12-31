@@ -137,7 +137,7 @@ def calculate(
         current_storm_snowscore,
         hours_until_next_storm,
         next_snowscore,
-        future_high_temp_f
+        next_day_high_temp_f
     )
     recovery_interpretation = interpret_recovery_score(recovery_score)
 
