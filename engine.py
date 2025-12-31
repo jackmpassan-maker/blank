@@ -18,9 +18,9 @@ TIMING_MULTIPLIERS = {
 # Regional multipliers
 # --------------------
 REGION_MULT = {
-    "urban": 0.8,
+    "urban": 0.9,
     "suburban": 1.00,
-    "rural": 1.3,
+    "rural": 1.25,
 }
 
 # --------------------
