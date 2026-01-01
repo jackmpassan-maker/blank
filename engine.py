@@ -106,11 +106,8 @@ def calculate_snowscore(
     wind_mph: float,
     prev_snow_days: int,
     peak_windows: list[str],
-    wind_chill_f: float = 0.0,  # passed from web form
+    wind_chill_f: float = 0.0
 ) -> float:
-    """
-    Calculate SnowScore for web app usage.
-    """
 
     # --- Step 1: Base snow/ice/sleet equivalents ---
     snow_eq = snow
@@ -131,17 +128,17 @@ def calculate_snowscore(
     snowscore *= get_multiplier(temp_f, TEMP_MULT)
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- Step 4: Wind chill points ---
-    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
-
-    # --- Step 5: Peak intensity timing multipliers ---
+    # --- Step 4: Apply peak intensity timing multipliers ---
     for w in peak_windows:
         snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
 
-    # --- Step 6: Previous snow days penalty ---
+    # --- Step 5: Previous snow days penalty ---
     snowscore -= prev_snow_days * 1.5
 
-    # --- Step 7: Round ---
+    # --- Step 6: Add wind chill points AFTER all multipliers ---
+    snowscore += wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
+
+    # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
 
 
