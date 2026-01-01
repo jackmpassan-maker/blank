@@ -61,21 +61,20 @@ def get_multiplier(value, table):
             return mult
     return 1.0
 
-# --------------------
-# WIND CHILL POINTS (USER INPUT)
-# --------------------
-def wind_chill_points_from_user(wind_chill_f, avg_annual_snow):
-    """
-    Convert user-provided wind chill (°F) into snow day points.
 
-    wind_chill_f: Minimum observed wind chill during the storm
-    avg_annual_snow: Used to scale regional sensitivity
+# --------------------
+# WIND CHILL POINTS (REGION-SCALED)
+# --------------------
+def wind_chill_points(wind_chill_f: float, avg_annual_snow: float) -> float:
     """
-    # Regional factor based on average snow (0.8-1.2)
-    avg_snow_in = max(0, min(avg_annual_snow, 100))
-    region_factor = 1.2 - (avg_snow_in / 100) * 0.4
+    Convert a minimum wind chill into snow day points, scaled by region/climatology.
+    """
 
-    # Aggressive scale for school-cancelling effect
+    # Clamp average annual snow for scaling (0–100 in)
+    avg_snow_clamped = max(0, min(avg_annual_snow, 100))
+    region_factor = 1.2 - (avg_snow_clamped / 100) * 0.4  # 1.2 -> 0.8
+
+    # Determine bucket
     if wind_chill_f > 0:
         base_points = 0
     elif -10 <= wind_chill_f <= 0:
@@ -87,24 +86,14 @@ def wind_chill_points_from_user(wind_chill_f, avg_annual_snow):
     else:  # < -30
         base_points = 40
 
-    return base_points * region_factor
+    # Apply region factor
+    points = base_points * region_factor
 
-def get_user_wind_chill(avg_annual_snow):
-    """
-    Ask the user for minimum wind chill during the storm and convert to points.
-    Returns the wind chill points.
-    """
-    try:
-        wind_chill_f = float(input("Enter minimum wind chill during the storm (°F): "))
-    except ValueError:
-        print("Invalid input. Using 0°F.")
-        wind_chill_f = 0.0
-
-    return wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
+    return points
 
 
 # =========================================================
-# MAIN SNOWSCORE FUNCTION (YOUR REAL FORMULA)
+# MAIN SNOWSCORE FUNCTION
 # =========================================================
 def calculate_snowscore(
     snow: float,
@@ -117,23 +106,22 @@ def calculate_snowscore(
     wind_mph: float,
     prev_snow_days: int,
     peak_windows: list[str],
-    wind_chill_f: float = 0.0  # <-- pass this from the web form
+    wind_chill_f: float = 0.0,  # passed from web form
 ) -> float:
     """
-    Calculate SnowScore for web app usage. No interactive prompts.
+    Calculate SnowScore for web app usage.
     """
 
     # --- Step 1: Base snow/ice/sleet equivalents ---
     snow_eq = snow
     ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
     sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
-
     total_eq = snow_eq + ice_eq + sleet_eq
 
     if total_eq <= 0:
         return 0.0
 
-    # --- Step 2: Normalize by climatology (average annual snow) ---
+    # --- Step 2: Normalize by climatology ---
     base = total_eq / (avg_annual_snow + 1) ** 0.4
     snowscore = base * 30
 
@@ -143,44 +131,36 @@ def calculate_snowscore(
     snowscore *= get_multiplier(temp_f, TEMP_MULT)
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- Step 4: Wind chill points from user input ---
-    snowscore += wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
+    # --- Step 4: Wind chill points ---
+    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
-    # --- Step 5: Apply peak intensity timing multipliers (stackable) ---
+    # --- Step 5: Peak intensity timing multipliers ---
     for w in peak_windows:
         snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
 
     # --- Step 6: Previous snow days penalty ---
     snowscore -= prev_snow_days * 1.5
 
-    # --- Step 7: Round for presentation ---
+    # --- Step 7: Round ---
     return round(snowscore, 1)
 
 
-
 # =========================================================
-# DECISION LOGIC (FIXED, EXHAUSTIVE)
+# DECISION LOGIC
 # =========================================================
 def determine_decision(snowscore, peak_windows):
-    # 0–25
     if snowscore <= 25:
         return "School ON"
-
-    # 26–34
     if snowscore <= 34:
         if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
             return "Late Start"
         return "School ON"
-
-    # 35–43
     if snowscore <= 43:
         if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM"]):
             return "Late Start"
         if any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
             return "Early Dismissal"
         return "School ON"
-
-    # 44–50
     if snowscore <= 50:
         if any(w in peak_windows for w in ["3AM-6AM", "6AM-9AM", "9AM-12PM", "12AM-3AM"]):
             return "Cancel"
@@ -189,16 +169,13 @@ def determine_decision(snowscore, peak_windows):
         if any(w in peak_windows for w in ["12PM-3PM", "3PM-6PM"]):
             return "Early Dismissal"
         return "Cancel"
-
-    # 50+
     return "Cancel"
 
 
 # =========================================================
-# RECOVERY SCORE FUNCTIONS (ALL OPTIONAL)
+# RECOVERY SCORE FUNCTIONS (OPTIONAL)
 # =========================================================
 def snowscore_recovery_contribution(snowscore: float | None) -> float:
-    """Contribution from current storm SnowScore. Optional."""
     if snowscore is None or snowscore < 20:
         return 0.0
     return ((int(snowscore) // 10) - 1) * 0.75
@@ -220,7 +197,7 @@ def time_gap_contribution(hours_until_next_storm: float | None) -> int:
 def next_storm_contribution(next_snowscore: float | None) -> int:
     if next_snowscore is None:
         return 0
-    if next_snowscore < 15: 
+    if next_snowscore < 15:
         return 0
     elif next_snowscore < 25:
         return 1
@@ -255,7 +232,6 @@ def calculate_recovery_score(
     next_snowscore: float | None = None,
     future_high_temp_f: float | None = None,
 ) -> float:
-    """Calculate total recovery score from optional inputs."""
     score = 0.0
     score += snowscore_recovery_contribution(current_storm_snowscore)
     score += time_gap_contribution(hours_until_next_storm)
@@ -275,4 +251,5 @@ def interpret_recovery_score(score: float) -> str:
         return "Elevated risk of additional snow day"
     else:
         return "High likelihood of extended closures"
+
 
