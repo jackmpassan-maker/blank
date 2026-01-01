@@ -60,6 +60,34 @@ def get_multiplier(value, table):
         if value <= limit:
             return mult
     return 1.0
+    
+# --------------------
+# WIND CHILL POINTS (USER INPUT)
+# --------------------
+def wind_chill_points_from_user(wind_chill_f, avg_annual_snow):
+    """
+    Convert user-provided wind chill (°F) into snow day points.
+    
+    wind_chill_f: Minimum observed wind chill during the storm
+    avg_annual_snow: Used to scale regional sensitivity
+    """
+    # Regional factor based on average snow (0.8-1.2)
+    avg_snow_in = max(0, min(avg_annual_snow, 100))
+    region_factor = 1.2 - (avg_snow_in / 100) * 0.4
+
+    # Aggressive scale for school-cancelling effect
+    if wind_chill_f > 0:
+        base_points = 0
+    elif -10 <= wind_chill_f <= 0:
+        base_points = 8
+    elif -20 <= wind_chill_f < -10:
+        base_points = 15
+    elif -30 <= wind_chill_f < -20:
+        base_points = 25
+    else:  # < -30
+        base_points = 40
+
+    return base_points * region_factor
 
 
 # =========================================================
@@ -76,6 +104,7 @@ def calculate_snowscore(
     wind_mph,
     prev_snow_days,
     peak_windows,
+    user_wind_chill_f
 ):
     # Base equivalents
     snow_eq = snow
@@ -91,11 +120,16 @@ def calculate_snowscore(
     base = total_eq / (avg_annual_snow + 1) ** 0.4
     snowscore = base * 30
 
-    # Apply multipliers
-    snowscore *= REGION_MULT.get(region.lower(), 1.0)
-    snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
-    snowscore *= get_multiplier(temp_f, TEMP_MULT)
-    snowscore *= get_multiplier(wind_mph, WIND_MULT)
+    # Apply existing multipliers
+snowscore *= REGION_MULT.get(region.lower(), 1.0)
+snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
+snowscore *= get_multiplier(temp_f, TEMP_MULT)
+snowscore *= get_multiplier(wind_mph, WIND_MULT)
+
+# --- NEW: Add user-provided wind chill points ---
+# 'user_wind_chill_f' should be passed to calculate_snowscore
+# Example: user_wind_chill_f = -15
+snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
 
     # Timing windows (stackable)
     for w in peak_windows:
