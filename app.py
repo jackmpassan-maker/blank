@@ -50,7 +50,7 @@ def home():
             <input type="number" name="wind_mph" required><br><br>
 
             <label>Minimum Wind Chill (°F):</label><br>
-            <input type="number" name="wind_chill" step="1" value=""><br><br>
+            <input type="number" name="wind_chill" step="1"><br><br>
 
             <label>Previous Snow Days:</label><br>
             <input type="number" name="prev_snow_days" value="0"><br><br>
@@ -113,7 +113,7 @@ def calculate(
     school_type: str = Form(...),
     temp_f: float = Form(...),
     wind_mph: float = Form(...),
-    wind_chill: float = Form(0),  # <-- added
+    wind_chill: str = Form(""),  # <- keep as string for safe conversion
     prev_snow_days: int = Form(0),
     peak_windows: list[str] = Form([]),
     # Recovery Score optional fields
@@ -122,6 +122,13 @@ def calculate(
     next_snowscore: float | None = Form(None),
     future_high_temp_f: float | None = Form(None)
 ):
+    # Safe conversion of wind_chill to float; blank defaults to 0
+    try:
+        wind_chill_f = float(wind_chill)
+    except (ValueError, TypeError):
+        wind_chill_f = 0.0
+
+    # --- Calculate SnowScore ---
     snowscore = calculate_snowscore(
         snow,
         freezing_rain,
@@ -133,11 +140,12 @@ def calculate(
         wind_mph,
         prev_snow_days,
         peak_windows,
-        wind_chill_f=wind_chill  # <-- pass wind chill here
+        wind_chill_f=wind_chill_f
     )
+
     decision = determine_decision(snowscore, peak_windows)
 
-    # Optional Recovery Score
+    # --- Recovery Score ---
     recovery_score = calculate_recovery_score(
         current_storm_snowscore,
         hours_until_next_storm,
@@ -146,27 +154,27 @@ def calculate(
     )
     recovery_interpretation = interpret_recovery_score(recovery_score)
 
-    # Explanation logic (same as before)
+    # --- Explanation ---
     if snowscore <= 25:
         explanation = "Conditions are adequate to keep school open."
     elif snowscore <= 34:
         if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
-            explanation = "While disruptions are relatively insignificant, peak intensity throughout the duration of the the morning commute necessitates a late start."
+            explanation = "While disruptions are relatively insignificant, peak intensity during the morning commute necessitates a late start."
         else:
             explanation = "While roads may be adversely affected, conditions remain manageable overall allowing school to stay open."
     elif snowscore <= 43:
-        if "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
+        if ("3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows) and "9AM-12PM" not in peak_windows:
             explanation = "Due to hazardous conditions during or directly before the morning commute, a late start is the best course of action."
-        elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows and "9AM-12PM" not in peak_windows:
-            explanation = "With subpar conditions emerging later in the school day, an early disimssal makes the most sense."
+        elif ("12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows) and "9AM-12PM" not in peak_windows:
+            explanation = "With subpar conditions later in the school day, an early dismissal makes the most sense."
         else:
             explanation = "While disruptions will be moderately impactful, timing dampens the danger enough for school to remain open."
     elif snowscore <= 50:
         if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows:
-            explanation = "While a considerably impactful event, fortunate timing only necessitates a late start"
-        elif "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows or "9AM-12PM" in peak_windows  or "12AM-3AM" in peak_windows:
-            explanation = "Dangerous conditions overnight or during the morning hours support cancellation."
-        elif "12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows:
+            explanation = "While a considerably impactful event, fortunate timing only necessitates a late start."
+        elif any(w in peak_windows for w in ["12AM-3AM","3AM-6AM","6AM-9AM","9AM-12PM"]):
+            explanation = "Dangerous conditions overnight or during morning hours support cancellation."
+        elif any(w in peak_windows for w in ["12PM-3PM","3PM-6PM"]):
             explanation = "Peak winter precipitation later in the school day supports early dismissal."
         else:
             explanation = "Overall conditions are too disruptive for safe operations."
@@ -211,3 +219,4 @@ def calculate(
 </body>
 </html>
 """
+
