@@ -49,6 +49,9 @@ def home():
             <label>Maximum Sustained Winds (mph):</label><br>
             <input type="number" name="wind_mph" required><br><br>
 
+            <label>Minimum Wind Chill (°F):</label><br>
+            <input type="number" name="wind_chill" step="1" value=""><br><br>
+
             <label>Previous Snow Days:</label><br>
             <input type="number" name="prev_snow_days" value="0"><br><br>
 
