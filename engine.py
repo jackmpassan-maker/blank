@@ -60,7 +60,7 @@ def get_multiplier(value, table):
         if value <= limit:
             return mult
     return 1.0
-    
+
 # --------------------
 # WIND CHILL POINTS (USER INPUT)
 # --------------------
@@ -89,6 +89,19 @@ def wind_chill_points_from_user(wind_chill_f, avg_annual_snow):
 
     return base_points * region_factor
 
+def get_user_wind_chill(avg_annual_snow):
+    """
+    Ask the user for minimum wind chill during the storm and convert to points.
+    Returns the wind chill points.
+    """
+    try:
+        wind_chill_f = float(input("Enter minimum wind chill during the storm (°F): "))
+    except ValueError:
+        print("Invalid input. Using 0°F.")
+        wind_chill_f = 0.0
+
+    return wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
+
 
 # =========================================================
 # MAIN SNOWSCORE FUNCTION (YOUR REAL FORMULA)
@@ -104,7 +117,7 @@ def calculate_snowscore(
     wind_mph,
     prev_snow_days,
     peak_windows,
-    user_wind_chill_f
+    user_wind_chill_f=None
 ):
     # Base equivalents
     snow_eq = snow
@@ -127,9 +140,10 @@ def calculate_snowscore(
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
     # --- NEW: Add user-provided wind chill points ---
-    # 'user_wind_chill_f' should be passed to calculate_snowscore
-    # Example: user_wind_chill_f = -15
-    snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
+    if user_wind_chill_f is None:
+        snowscore += get_user_wind_chill(avg_annual_snow)
+    else:
+        snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
 
     # Timing windows (stackable)
     for w in peak_windows:
