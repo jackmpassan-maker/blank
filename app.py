@@ -113,6 +113,7 @@ def calculate(
     school_type: str = Form(...),
     temp_f: float = Form(...),
     wind_mph: float = Form(...),
+    wind_chill: float = Form(0),  # <-- added
     prev_snow_days: int = Form(0),
     peak_windows: list[str] = Form([]),
     # Recovery Score optional fields
@@ -131,7 +132,8 @@ def calculate(
         temp_f,
         wind_mph,
         prev_snow_days,
-        peak_windows
+        peak_windows,
+        wind_chill_f=wind_chill  # <-- pass wind chill here
     )
     decision = determine_decision(snowscore, peak_windows)
 
