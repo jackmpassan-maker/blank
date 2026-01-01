@@ -67,7 +67,7 @@ def get_multiplier(value, table):
 def wind_chill_points_from_user(wind_chill_f, avg_annual_snow):
     """
     Convert user-provided wind chill (°F) into snow day points.
-    
+
     wind_chill_f: Minimum observed wind chill during the storm
     avg_annual_snow: Used to scale regional sensitivity
     """
