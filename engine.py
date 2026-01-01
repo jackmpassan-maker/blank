@@ -136,7 +136,7 @@ def calculate_snowscore(
     snowscore -= prev_snow_days * 1.5
 
     # --- Step 6: Add wind chill points AFTER all multipliers ---
-    snowscore += wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
+    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
     # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
