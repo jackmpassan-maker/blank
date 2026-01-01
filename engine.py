@@ -116,8 +116,7 @@ def calculate_snowscore(
     temp_f,
     wind_mph,
     prev_snow_days,
-    peak_windows,
-    user_wind_chill_f=None
+    peak_windows
 ):
     # Base equivalents
     snow_eq = snow
@@ -139,11 +138,14 @@ def calculate_snowscore(
     snowscore *= get_multiplier(temp_f, TEMP_MULT)
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- NEW: Add user-provided wind chill points ---
-    if user_wind_chill_f is None:
-        snowscore += get_user_wind_chill(avg_annual_snow)
-    else:
-        snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
+    # --- NEW: Ask the user for wind chill ---
+    try:
+        wind_chill_f = float(input("Enter minimum wind chill during the storm (°F): "))
+    except ValueError:
+        print("Invalid input. Using 0°F.")
+        wind_chill_f = 0.0
+
+    snowscore += wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
 
     # Timing windows (stackable)
     for w in peak_windows:
