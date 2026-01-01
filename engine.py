@@ -107,18 +107,23 @@ def get_user_wind_chill(avg_annual_snow):
 # MAIN SNOWSCORE FUNCTION (YOUR REAL FORMULA)
 # =========================================================
 def calculate_snowscore(
-    snow,
-    freezing_rain,
-    sleet,
-    avg_annual_snow,
-    region,
-    school_type,
-    temp_f,
-    wind_mph,
-    prev_snow_days,
-    peak_windows
-):
-    # Base equivalents
+    snow: float,
+    freezing_rain: float,
+    sleet: float,
+    avg_annual_snow: float,
+    region: str,
+    school_type: str,
+    temp_f: float,
+    wind_mph: float,
+    prev_snow_days: int,
+    peak_windows: list[str],
+    wind_chill_f: float = 0.0  # <-- pass this from the web form
+) -> float:
+    """
+    Calculate SnowScore for web app usage. No interactive prompts.
+    """
+
+    # --- Step 1: Base snow/ice/sleet equivalents ---
     snow_eq = snow
     ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
     sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
@@ -128,33 +133,29 @@ def calculate_snowscore(
     if total_eq <= 0:
         return 0.0
 
-    # Normalize by climatology (reduced suppression for high-snow regions)
+    # --- Step 2: Normalize by climatology (average annual snow) ---
     base = total_eq / (avg_annual_snow + 1) ** 0.4
     snowscore = base * 30
 
-    # Apply existing multipliers
+    # --- Step 3: Apply multipliers ---
     snowscore *= REGION_MULT.get(region.lower(), 1.0)
     snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
     snowscore *= get_multiplier(temp_f, TEMP_MULT)
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- NEW: Ask the user for wind chill ---
-    try:
-        wind_chill_f = float(input("Enter minimum wind chill during the storm (°F): "))
-    except ValueError:
-        print("Invalid input. Using 0°F.")
-        wind_chill_f = 0.0
-
+    # --- Step 4: Wind chill points from user input ---
     snowscore += wind_chill_points_from_user(wind_chill_f, avg_annual_snow)
 
-    # Timing windows (stackable)
+    # --- Step 5: Apply peak intensity timing multipliers (stackable) ---
     for w in peak_windows:
         snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
 
-    # Previous snow days penalty
+    # --- Step 6: Previous snow days penalty ---
     snowscore -= prev_snow_days * 1.5
 
+    # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
+
 
 
 # =========================================================
