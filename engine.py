@@ -121,15 +121,15 @@ def calculate_snowscore(
     snowscore = base * 30
 
     # Apply existing multipliers
-snowscore *= REGION_MULT.get(region.lower(), 1.0)
-snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
-snowscore *= get_multiplier(temp_f, TEMP_MULT)
-snowscore *= get_multiplier(wind_mph, WIND_MULT)
+    snowscore *= REGION_MULT.get(region.lower(), 1.0)
+    snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
+    snowscore *= get_multiplier(temp_f, TEMP_MULT)
+    snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-# --- NEW: Add user-provided wind chill points ---
-# 'user_wind_chill_f' should be passed to calculate_snowscore
-# Example: user_wind_chill_f = -15
-snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
+    # --- NEW: Add user-provided wind chill points ---
+    # 'user_wind_chill_f' should be passed to calculate_snowscore
+    # Example: user_wind_chill_f = -15
+    snowscore += wind_chill_points_from_user(user_wind_chill_f, avg_annual_snow)
 
     # Timing windows (stackable)
     for w in peak_windows:
