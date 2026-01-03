@@ -29,6 +29,10 @@ def home():
     <body>
         <h1>Snow Day Calculator</h1>
 
+        <div style="background:#fff8dc; padding:10px; border:1px solid #f0c36d; margin-bottom:20px;">
+            <strong>Note:</strong> After 6PM begins concerns for the next day rather than the day of.
+        </div>
+
         <form action="/calculate" method="post">
             <!-- Existing SnowScore Inputs -->
             <label>Snow Expected (inches):</label><br>
