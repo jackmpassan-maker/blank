@@ -173,10 +173,9 @@ def determine_decision(snowscore, peak_windows):
 # RECOVERY SCORE FUNCTIONS (OPTIONAL)
 # =========================================================
 def snowscore_recovery_contribution(snowscore: float | None) -> float:
-    if snowscore is None or snowscore < 20:
+    if snowscore is None or snowscore < 10:
         return 0.0
-    return ((int(snowscore) // 10) - 1) * 0.75
-
+    return (int(snowscore) // 10) * 0.75
 
 def time_gap_contribution(hours_until_next_storm: float | None) -> int:
     if hours_until_next_storm is None:
