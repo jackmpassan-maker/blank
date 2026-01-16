@@ -78,7 +78,7 @@ def wind_chill_points(wind_chill_f: float, avg_annual_snow: float) -> float:
     if wind_chill_f > 0:
         base_points = 0
     elif -10 <= wind_chill_f <= 0:
-        base_points = 8
+        base_points = 6
     elif -20 <= wind_chill_f < -10:
         base_points = 15
     elif -30 <= wind_chill_f < -20:
