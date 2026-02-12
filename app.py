@@ -174,10 +174,10 @@ def calculate(
         else:
             explanation = "While disruptions will be moderately impactful, timing dampens the danger enough for school to remain open."
     elif snowscore <= 50:
-        if "6PM-9PM" in peak_windows or "9PM-12AM" in peak_windows:
-            explanation = "While a considerably impactful event, fortunate timing only necessitates a late start."
-        elif any(w in peak_windows for w in ["12AM-3AM","3AM-6AM","6AM-9AM","9AM-12PM"]):
+        if "12AM-3AM" in peak_windows or "9PM-12AM" in peak_windows or "3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows:
             explanation = "Dangerous conditions overnight or during morning hours support cancellation."
+        elif any(w in peak_windows for w in ["6PM-9PM","9PM-12AM"]):
+            explanation = "While a considerably impactful event, fortunate timing only necessitates a late start." 
         elif any(w in peak_windows for w in ["12PM-3PM","3PM-6PM"]):
             explanation = "Peak winter precipitation later in the school day supports early dismissal."
         else:
