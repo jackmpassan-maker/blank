@@ -140,9 +140,16 @@ def calculate_snowscore(
                 max_timing = mult
         snowscore *= max_timing
 
-    # --- Step 5: Previous snow days penalty ---
-    snowscore -= prev_snow_days * 1.5
-
+    # --- Step 5: Previous snow days penalty (varies by school type) ---
+    # Public schools: full penalty (1.5 per day)
+    # Charter schools: half penalty (0.75 per day)
+    # Private schools: no penalty (0 per day)
+    if school_type.lower() == "public":
+        snowscore -= prev_snow_days * 1.5
+    elif school_type.lower() == "charter":
+        snowscore -= prev_snow_days * 0.75
+    # Private schools get no penalty
+    
     # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
 
