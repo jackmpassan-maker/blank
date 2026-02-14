@@ -131,9 +131,14 @@ def calculate_snowscore(
     snowscore *= get_multiplier(temp_f, TEMP_MULT)
     snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- Step 4: Apply peak intensity timing multipliers ---
-    for w in peak_windows:
-        snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
+    # --- Step 4: Apply peak intensity timing multipliers (use max, not product) ---
+    if peak_windows:
+        max_timing = 1.0
+        for w in peak_windows:
+            mult = TIMING_MULTIPLIERS.get(w, 1.0)
+            if mult > max_timing:
+                max_timing = mult
+        snowscore *= max_timing
 
     # --- Step 5: Previous snow days penalty ---
     snowscore -= prev_snow_days * 1.5
