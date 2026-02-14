@@ -161,14 +161,16 @@ def calculate(
     # --- Explanation ---
     if snowscore <= 25:
         explanation = "Conditions are adequate to keep school open."
-    elif snowscore <= 34:
-        if "6AM-9AM" in peak_windows and "9AM-12PM" not in peak_windows:
+    elif snowscore <= 33:
+        if "6AM-9AM" in peak_windows and "3AM-6AM" in peak_windows and "9AM-12PM" not in peak_windows:
             explanation = "While disruptions are relatively insignificant, peak intensity during the morning commute necessitates a late start."
         else:
             explanation = "While roads may be adversely affected, conditions remain manageable overall allowing school to stay open."
-    elif snowscore <= 43:
-        if ("3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows) and "9AM-12PM" not in peak_windows:
-            explanation = "Due to hazardous conditions during or directly before the morning commute, a late start is the best course of action."
+    elif snowscore <= 41:
+        if ("3AM-6AM" in peak_windows or "6AM-9AM" in peak_windows):
+            explanation = "Due to hazardous conditions during or directly before the morning commute, cancellation is the best option."
+        elif ("9PM-12AM" in peak_windows or "12AM-3AM" in peak_windows):
+            explanation = "Impactful winter precipitation in the early overnight hours is conducive to a late start"
         elif ("12PM-3PM" in peak_windows or "3PM-6PM" in peak_windows) and "9AM-12PM" not in peak_windows:
             explanation = "With subpar conditions later in the school day, an early dismissal makes the most sense."
         else:
