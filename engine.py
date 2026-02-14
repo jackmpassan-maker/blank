@@ -110,36 +110,36 @@ def calculate_snowscore(
 ) -> float:
 
    # --- Step 1: Base snow/ice/sleet equivalents ---
-snow_eq = snow
-ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
-sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
-total_eq = snow_eq + ice_eq + sleet_eq
+    snow_eq = snow
+    ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
+    sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
+    total_eq = snow_eq + ice_eq + sleet_eq
 
-if total_eq <= 0:
-    return 0.0
+    if total_eq <= 0:
+        return 0.0
 
-# --- Step 2: Normalize by climatology ---
-base = total_eq / (avg_annual_snow + 1) ** 0.4
-snowscore = base * 30
+    # --- Step 2: Normalize by climatology ---
+    base = total_eq / (avg_annual_snow + 1) ** 0.4
+    snowscore = base * 30
 
-# --- NEW: Add wind chill points HERE (before multipliers) ---
-snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
+    # --- NEW: Add wind chill points HERE (before multipliers) ---
+    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
-# --- Step 3: Apply multipliers (NOW wind chill gets multiplied too) ---
-snowscore *= REGION_MULT.get(region.lower(), 1.0)
-snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
-snowscore *= get_multiplier(temp_f, TEMP_MULT)
-snowscore *= get_multiplier(wind_mph, WIND_MULT)
+    # --- Step 3: Apply multipliers (NOW wind chill gets multiplied too) ---
+    snowscore *= REGION_MULT.get(region.lower(), 1.0)
+    snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
+    snowscore *= get_multiplier(temp_f, TEMP_MULT)
+    snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-# --- Step 4: Apply peak intensity timing multipliers ---
-for w in peak_windows:
+    # --- Step 4: Apply peak intensity timing multipliers ---
+    for w in peak_windows:
     snowscore *= TIMING_MULTIPLIERS.get(w, 1.0)
 
-# --- Step 5: Previous snow days penalty ---
-snowscore -= prev_snow_days * 1.5
+    # --- Step 5: Previous snow days penalty ---
+    snowscore -= prev_snow_days * 1.5
 
-# --- Step 7: Round for presentation ---
-return round(snowscore, 1)
+    # --- Step 7: Round for presentation ---
+    return round(snowscore, 1)
 
 
 # =========================================================
