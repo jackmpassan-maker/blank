@@ -140,11 +140,11 @@ def calculate_snowscore(
             if mult > max_timing:
                 max_timing = mult
     
-    # Quick duration multiplier: 5% per additional window
-    duration_mult = 1.0 + (len(peak_windows) - 1) * 0.05
+        # Quick duration multiplier: 5% per additional window
+        duration_mult = 1.0 + (len(peak_windows) - 1) * 0.05
     
-    # Apply both
-    snowscore *= max_timing * duration_mult
+        # Apply both
+        snowscore *= max_timing * duration_mult
 
     # --- Step 5: Previous snow days penalty (varies by school type) ---
     # Public schools: full penalty (1.5 per day)
