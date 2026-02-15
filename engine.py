@@ -146,20 +146,20 @@ if peak_windows:
     # Apply both
     snowscore *= max_timing * duration_mult
 
-# --- Step 5: Previous snow days penalty (varies by school type) ---
-# Public schools: full penalty (1.5 per day)
-# Charter schools: half penalty (0.75 per day)
-# Private schools: no penalty (0 per day)
-if school_type.lower() == "public":
-    snowscore -= prev_snow_days * 1.5
-elif school_type.lower() == "charter":
-    snowscore -= prev_snow_days * 0.75
-# Private schools get no penalty
+    # --- Step 5: Previous snow days penalty (varies by school type) ---
+    # Public schools: full penalty (1.5 per day)
+    # Charter schools: half penalty (0.75 per day)
+    # Private schools: no penalty (0 per day)
+    if school_type.lower() == "public":
+        snowscore -= prev_snow_days * 1.5
+    elif school_type.lower() == "charter":
+        snowscore -= prev_snow_days * 0.75
+    # Private schools get no penalty
 
-# --- Step 6: Add wind chill points AFTER all multipliers ---
-snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
+    # --- Step 6: Add wind chill points AFTER all multipliers ---
+    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
-# --- Step 7: Round for presentation ---
+    # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
 
 
