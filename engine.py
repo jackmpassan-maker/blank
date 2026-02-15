@@ -63,16 +63,12 @@ def get_multiplier(value, table):
 
 
 # --------------------
-# WIND CHILL POINTS (REGION-SCALED)
+# WIND CHILL POINTS
 # --------------------
 def wind_chill_points(wind_chill_f: float, avg_annual_snow: float) -> float:
-    """
-    Convert a minimum wind chill into snow day points, scaled by region/climatology.
-    """
-
     # Clamp average annual snow for scaling (0–100 in)
     avg_snow_clamped = max(0, min(avg_annual_snow, 100))
-    region_factor = 1.2 - (avg_snow_clamped / 100) * 0.4  # 1.2 -> 0.8
+    region_factor = 1.2 - (avg_snow_clamped / 100) * 0.4
 
     # Determine bucket
     if wind_chill_f > 0:
@@ -83,13 +79,10 @@ def wind_chill_points(wind_chill_f: float, avg_annual_snow: float) -> float:
         base_points = 15
     elif -30 <= wind_chill_f < -20:
         base_points = 25
-    else:  # < -30
+    else:
         base_points = 40
 
-    # Apply region factor
-    points = base_points * region_factor
-
-    return points
+    return base_points * region_factor
 
 
 # =========================================================
@@ -109,7 +102,7 @@ def calculate_snowscore(
     wind_chill_f: float = 0.0
 ) -> float:
 
-   # --- Step 1: Base snow/ice/sleet equivalents ---
+    # --- Step 1: Base snow/ice/sleet equivalents ---
     snow_eq = snow
     ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
     sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
@@ -122,39 +115,26 @@ def calculate_snowscore(
     base = total_eq / (avg_annual_snow + 1) ** 0.4
     snowscore = base * 30
 
-    # --- NEW: Add wind chill points HERE (before multipliers) ---
+    # --- Step 3: Add wind chill points (before multipliers) ---
     snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
-    # --- Step 3: Apply multipliers (NOW wind chill gets multiplied too) ---
+    # --- Step 4: Apply multipliers ---
     snowscore *= REGION_MULT.get(region.lower(), 1.0)
     snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
-    snowscore *= get_multiplier(temp_f, TEMP_MULT)  # Fixed typo: get_multipler → get_multiplier
-    snowscore *= get_multiplier(wind_mph, WIND_MULT)  # Fixed typo: wind_mpm → wind_mph
+    snowscore *= get_multiplier(temp_f, TEMP_MULT)
+    snowscore *= get_multiplier(wind_mph, WIND_MULT)
 
-    # --- Step 4: Apply peak intensity timing multipliers ---
+    # --- Step 5: Apply peak timing multipliers ---
     if peak_windows:
-        # Find the worst single window multiplier
-        max_timing = 1.0
-        for w in peak_windows:
-            mult = TIMING_MULTIPLIERS.get(w, 1.0)
-            if mult > max_timing:
-                max_timing = mult
-    
-        # Quick duration multiplier: 5% per additional window
+        max_timing = max(TIMING_MULTIPLIERS.get(w, 1.0) for w in peak_windows)
         duration_mult = 1.0 + (len(peak_windows) - 1) * 0.05
-    
-        # Apply both
         snowscore *= max_timing * duration_mult
 
-    # --- Step 5: Previous snow days penalty (varies by school type) ---
-    # Public schools: full penalty (1.5 per day)
-    # Charter schools: half penalty (0.75 per day)
-    # Private schools: no penalty (0 per day)
+    # --- Step 6: Previous snow days penalty ---
     if school_type.lower() == "public":
         snowscore -= prev_snow_days * 1.5
     elif school_type.lower() == "charter":
         snowscore -= prev_snow_days * 0.75
-    # Private schools get no penalty
 
     # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
@@ -190,7 +170,7 @@ def determine_decision(snowscore, peak_windows):
 
 
 # =========================================================
-# RECOVERY SCORE FUNCTIONS (OPTIONAL)
+# RECOVERY SCORE FUNCTIONS
 # =========================================================
 def snowscore_recovery_contribution(snowscore: float | None) -> float:
     if snowscore is None or snowscore < 10:
@@ -209,7 +189,6 @@ def time_gap_contribution(hours_until_next_storm: float | None) -> int:
     else:
         return 3
 
-
 def next_storm_contribution(next_snowscore: float | None) -> int:
     if next_snowscore is None:
         return 0
@@ -226,7 +205,6 @@ def next_storm_contribution(next_snowscore: float | None) -> int:
     else:
         return 5
 
-
 def future_temp_contribution(high_temp_f: float | None) -> int:
     if high_temp_f is None:
         return 0
@@ -241,7 +219,6 @@ def future_temp_contribution(high_temp_f: float | None) -> int:
     else:
         return 4
 
-
 def calculate_recovery_score(
     current_storm_snowscore: float | None = None,
     hours_until_next_storm: float | None = None,
@@ -254,7 +231,6 @@ def calculate_recovery_score(
     score += next_storm_contribution(next_snowscore)
     score += future_temp_contribution(future_high_temp_f)
     return round(score, 2)
-
 
 def interpret_recovery_score(score: float) -> str:
     if score <= 0:
