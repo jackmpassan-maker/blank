@@ -160,7 +160,7 @@ elif school_type.lower() == "charter":
 snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
 # --- Step 7: Round for presentation ---
-return round(snowscore, 1)
+    return round(snowscore, 1)
 
 
 # =========================================================
