@@ -135,7 +135,7 @@ snowscore *= get_multiplier(wind_mph, WIND_MULT)  # Fixed typo: wind_mpm → win
 if peak_windows:
     # Find the worst single window multiplier
     max_timing = 1.0
-    for w in peak_windows:          # ← This line must be indented
+    for w in peak_windows:
         mult = TIMING_MULTIPLIERS.get(w, 1.0)
         if mult > max_timing:
             max_timing = mult
@@ -157,11 +157,10 @@ elif school_type.lower() == "charter":
 # Private schools get no penalty
 
 # --- Step 6: Add wind chill points AFTER all multipliers ---
-# (Make sure this line is here - it was missing in your snippet)
 snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
 # --- Step 7: Round for presentation ---
-    return round(snowscore, 1)
+return round(snowscore, 1)
 
 
 # =========================================================
