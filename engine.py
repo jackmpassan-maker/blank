@@ -126,19 +126,19 @@ def calculate_snowscore(
     snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
 
     # --- Step 3: Apply multipliers (NOW wind chill gets multiplied too) ---
-snowscore *= REGION_MULT.get(region.lower(), 1.0)
-snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
-snowscore *= get_multiplier(temp_f, TEMP_MULT)  # Fixed typo: get_multipler → get_multiplier
-snowscore *= get_multiplier(wind_mph, WIND_MULT)  # Fixed typo: wind_mpm → wind_mph
+    snowscore *= REGION_MULT.get(region.lower(), 1.0)
+    snowscore *= SCHOOL_MULT.get(school_type.lower(), 1.0)
+    snowscore *= get_multiplier(temp_f, TEMP_MULT)  # Fixed typo: get_multipler → get_multiplier
+    snowscore *= get_multiplier(wind_mph, WIND_MULT)  # Fixed typo: wind_mpm → wind_mph
 
-# --- Step 4: Apply peak intensity timing multipliers ---
-if peak_windows:
-    # Find the worst single window multiplier
-    max_timing = 1.0
-    for w in peak_windows:
-        mult = TIMING_MULTIPLIERS.get(w, 1.0)
-        if mult > max_timing:
-            max_timing = mult
+    # --- Step 4: Apply peak intensity timing multipliers ---
+    if peak_windows:
+        # Find the worst single window multiplier
+        max_timing = 1.0
+        for w in peak_windows:
+            mult = TIMING_MULTIPLIERS.get(w, 1.0)
+            if mult > max_timing:
+                max_timing = mult
     
     # Quick duration multiplier: 5% per additional window
     duration_mult = 1.0 + (len(peak_windows) - 1) * 0.05
