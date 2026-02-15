@@ -156,9 +156,6 @@ def calculate_snowscore(
         snowscore -= prev_snow_days * 0.75
     # Private schools get no penalty
 
-    # --- Step 6: Add wind chill points AFTER all multipliers ---
-    snowscore += wind_chill_points(wind_chill_f, avg_annual_snow)
-
     # --- Step 7: Round for presentation ---
     return round(snowscore, 1)
 
