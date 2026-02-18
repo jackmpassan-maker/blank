@@ -10,8 +10,8 @@ TIMING_MULTIPLIERS = {
     "9AM-12PM": 0.90,
     "12PM-3PM": 1.00,
     "3PM-6PM": 1.30,
-    "6PM-9PM": 0.75,
-    "9PM-12AM": 0.85,
+    "6PM-9PM": 0.8,
+    "9PM-12AM": 0.9,
 }
 
 # --------------------
@@ -29,7 +29,7 @@ REGION_MULT = {
 SCHOOL_MULT = {
     "public": 1.15,
     "charter": 1.1,
-    "private": 0.90,
+    "private": 0.9,
 }
 
 # --------------------
