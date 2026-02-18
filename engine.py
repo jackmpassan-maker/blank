@@ -105,7 +105,7 @@ def calculate_snowscore(
     # --- Step 1: Base snow/ice/sleet equivalents ---
     snow_eq = snow
     ice_eq = 4.0 * (freezing_rain / 0.10) ** 0.7 if freezing_rain > 0 else 0
-    sleet_eq = 1.4 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
+    sleet_eq = 1.2 * (sleet / 0.10) ** 0.7 if sleet > 0 else 0
     total_eq = snow_eq + ice_eq + sleet_eq
 
     if total_eq <= 0:
