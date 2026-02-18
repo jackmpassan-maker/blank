@@ -149,6 +149,8 @@ def determine_decision(snowscore, peak_windows):
     if snowscore <= 33:
         if "6AM-9AM" in peak_windows or "3AM-6AM" in peak_windows and "9AM-12PM" not in peak_windows:
             return "Late Start"
+        if "12PM-3PM" in peak_windows and "9AM-12PM" not in peak_windows: 
+            return "Early Dismissal" 
         return "School ON"
     if snowscore <= 41:
         if "6AM-9AM" in peak_windows or "3AM-6AM" in peak_windows:
