@@ -4,7 +4,7 @@ import math
 # Timing multipliers
 # --------------------
 TIMING_MULTIPLIERS = {
-    "12AM-3AM": 1.05,
+    "12AM-3AM": 1.1,
     "3AM-6AM": 1.20,
     "6AM-9AM": 1.40,
     "9AM-12PM": 0.90,
