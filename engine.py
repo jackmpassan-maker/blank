@@ -27,8 +27,8 @@ REGION_MULT = {
 # School type multipliers
 # --------------------
 SCHOOL_MULT = {
-    "public": 1.10,
-    "charter": 1.05,
+    "public": 1.15,
+    "charter": 1.1,
     "private": 0.90,
 }
 
