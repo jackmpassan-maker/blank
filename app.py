@@ -164,6 +164,8 @@ def calculate(
     elif snowscore <= 33:
         if "6AM-9AM" in peak_windows and "3AM-6AM" in peak_windows and "9AM-12PM" not in peak_windows:
             explanation = "While disruptions are relatively insignificant, peak intensity during the morning commute necessitates a late start."
+        elif "12PM-3PM" in peak_windows and "9AM-12PM" not in peak_windows:
+            explanation = "Peak intensity during the early afternoon constitutes an early dismissal." 
         else:
             explanation = "While roads may be adversely affected, conditions remain manageable overall allowing school to stay open."
     elif snowscore <= 41:
