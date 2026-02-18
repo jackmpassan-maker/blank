@@ -29,7 +29,7 @@ REGION_MULT = {
 SCHOOL_MULT = {
     "public": 1.15,
     "charter": 1.1,
-    "private": 0.9,
+    "private": 0.92,
 }
 
 # --------------------
